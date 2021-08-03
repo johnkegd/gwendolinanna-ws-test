@@ -1,5 +1,7 @@
 package com.gwendolinanna.ws.auth.app.restassuredtest;
 
+import com.gwendolinanna.ws.auth.app.restassuredtest.utils.TestConstants;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,13 +29,10 @@ import static org.junit.jupiter.api.Assertions.fail;
 @SpringBootTest
 class TestCreateUser {
 
-    private final String CONTEXT_PATH = "/auth";
-    private final String CONTEN_TYPE = "application/json";
-
     @BeforeEach
     public void setUp() throws Exception {
-        RestAssured.baseURI = "http://localhost";
-        RestAssured.port = 8080;
+        RestAssured.baseURI = TestConstants.BASE_URI;
+        RestAssured.port = TestConstants.PORT;
     }
 
     @Test
@@ -55,20 +54,20 @@ class TestCreateUser {
         Map<String, Object> userDetails = new HashMap<>();
         userDetails.put("firstName", "John");
         userDetails.put("lastName", "Garcia");
-        userDetails.put("email", "john@gwendolinanna.com");
-        userDetails.put("password", "vawe12");
+        userDetails.put("email", TestConstants.EMAIL_ADDRESS);
+        userDetails.put("password", TestConstants.PASSWORD);
         userDetails.put("posts", userPosts);
 
 
         Response response = given()
-                .contentType(CONTEN_TYPE)
-                .accept(CONTEN_TYPE)
+                .contentType(TestConstants.CONTENT_TYPE_JSON)
+                .accept(TestConstants.CONTENT_TYPE_JSON)
                 .body(userDetails)
                 .when()
-                .post(CONTEXT_PATH + "/users")
+                .post(TestConstants.APP_CONTEXT + TestConstants.USERS_PATH)
                 .then()
                 .statusCode(200)
-                .contentType(CONTEN_TYPE)
+                .contentType(TestConstants.CONTENT_TYPE_JSON)
                 .extract()
                 .response();
 
