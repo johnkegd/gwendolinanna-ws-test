@@ -1,5 +1,8 @@
 package com.gwendolinanna.ws.auth.app.restassuredtest;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +17,8 @@ import io.restassured.response.Response;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 
 /**
@@ -69,6 +74,21 @@ class TestCreateUser {
 
         String userId = response.jsonPath().getString("userId");
         assertNotNull(userId);
+
+        String bodyString = response.body().asString();
+        try {
+            JSONObject responseBodyJson = new JSONObject(bodyString);
+            JSONArray posts = responseBodyJson.getJSONArray("posts");
+
+            assertNotNull(posts);
+            assertTrue(posts.length() == 1);
+
+            String postsId = posts.getJSONObject(0).getString("postsId");
+            assertNotNull(postsId);
+            assertTrue(postsId.length() == 30);
+        } catch (JSONException e) {
+            fail(e.getMessage());
+        }
     }
 
 }
