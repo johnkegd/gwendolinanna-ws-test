@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 
 import static io.restassured.RestAssured.given;
@@ -121,6 +122,24 @@ class UserWebServiceEndpointTest {
         assertNotNull(storedPosts);
         assertTrue(posts.size() == storedPosts.size());
         assertEquals(posts.get(0).get("category"), storedPosts.get(0).get("category"));
+    }
+
+    @Test
+    final void testDeleteUserDetails() {
+        Response response = given()
+                .header("Authorization", authorizationHeader)
+                .accept(ContentType.JSON)
+                .pathParam("id", userId)
+                .when()
+                .delete(TestConstants.APP_CONTEXT.concat(TestConstants.USERS_PATH).concat("/{id}"))
+                .then()
+                .statusCode(200)
+                .contentType(TestConstants.CONTENT_TYPE_JSON)
+                .extract()
+                .response();
+
+        String result = response.jsonPath().getString("operationResult");
+        assertEquals("SUCCESS", result);
     }
 
 }
